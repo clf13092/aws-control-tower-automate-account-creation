@@ -4,12 +4,13 @@
 import boto3
 import json
 
-def lambda_handler(event, context);
+def lambda_handler(event, context):
     # event変数には、API GatewayのPOSTメソッドで受け取ったjson形式のリクエストが格納されている
     # event変数の中身は以下のようになっている
     # {
     #   "email": "メールアドレス",
-    #   "name": "名前",
+    #   "first_name": "名前",
+    #   "last_name": "名字",
     #   "registration_date": "登録日付"
     # }
     # この情報をDynamoDBに登録する
@@ -31,7 +32,8 @@ def lambda_handler(event, context);
         table.put_item(
             Item={
                 'email': event['email'],
-                'name': event['name'],
+                'first_name': event['first_name'],
+                'last_name': event['last_name'],
                 'registration_date': event['registration_date']
             }
         )
