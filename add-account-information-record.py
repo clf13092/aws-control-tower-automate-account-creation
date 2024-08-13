@@ -17,7 +17,7 @@ def lambda_handler(event, context):
     # この情報をDynamoDBに登録する
     dynamodb = boto3.resource('dynamodb')
     table_name = os.environ['TABLE_NAME']
-    table = dynamodb.Table('table_name')
+    table = dynamodb.Table(table_name)
     # メールアドレスがすでに登録されているかどうかをチェックする
     response = table.get_item(
         Key={
