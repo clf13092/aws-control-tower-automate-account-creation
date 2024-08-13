@@ -2,6 +2,7 @@
 # このLambda関数は、API GatewayのPOSTメソッドで呼び出されることを想定している
 # このLambda関数は、DynamoDBのテーブルにレコードを追加し、アカウント作成のためのLambda関数を呼び出す
 import boto3
+import os
 import json
 
 def lambda_handler(event, context):
@@ -15,7 +16,8 @@ def lambda_handler(event, context):
     # }
     # この情報をDynamoDBに登録する
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('account-information')
+    table_name = os.environ['TABLE_NAME']
+    table = dynamodb.Table('table_name')
     # メールアドレスがすでに登録されているかどうかをチェックする
     response = table.get_item(
         Key={

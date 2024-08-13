@@ -46,7 +46,7 @@ def lambda_handler(event,context):
     # service catalogからアカウント作成用のポートフォリオの情報を取得する。
     # この情報は環境変数に設定されている
     product_id = os.environ['PRODUCT_ID']
-    managed_organizational_unit = os.environ['ManagedOrganizationalUnit']
+    managed_organizational_unit = os.environ['MANAGED_ORGANIZATIONAL_UNIT']
     email = event['Records'][0]['dynamodb']['NewImage']['email']['S']
     # プロビジョン後の製品の名前のために、emailから@以降を取り除いた文字列を取得する
     email_without_domain = email.split('@')[0]
