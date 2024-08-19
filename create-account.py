@@ -45,9 +45,12 @@ import os
 def lambda_handler(event,context):
     # service catalogからアカウント作成用のポートフォリオの情報を取得する。
     # この情報は環境変数に設定されている
+    # デバッグ用にevent変数の中身を出力する
     product_id = os.environ['PRODUCT_ID']
+    provisioning_artifact_id = os.environ['PROVISIONING_ARTIFACT_ID']
     managed_organizational_unit = os.environ['MANAGED_ORGANIZATIONAL_UNIT']
     email = event['Records'][0]['dynamodb']['NewImage']['email']['S']
+    print(email)
     # プロビジョン後の製品の名前のために、emailから@以降を取り除いた文字列を取得する
     email_without_domain = email.split('@')[0]
     first_name = event['Records'][0]['dynamodb']['NewImage']['first_name']['S']
@@ -55,9 +58,12 @@ def lambda_handler(event,context):
 
     # service catalogのクライアントを生成する
     service_catalog = boto3.client('servicecatalog')
+    # デバッグ用にservice catalogのプロダクト情報を取得
+    print(service_catalog.list_provisioning_artifacts(ProductId=product_id))
     # service catalogの製品からアカウントを作成する
     service_catalog.provision_product(
         ProductId=product_id,
+        ProvisioningArtifactId=provisioning_artifact_id,
         ProvisionedProductName=email_without_domain,
         ProvisioningParameters=[
             {
