@@ -15,6 +15,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Python 3.12のインストール
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'  # 使用するPythonのバージョンを指定
+          
       # AWS CLIのセットアップ
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
