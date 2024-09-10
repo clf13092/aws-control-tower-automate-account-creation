@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main  # mainブランチにプッシュされたときに実行
+    paths:
+      - 'script/**'  # scriptディレクトリ以下のファイルが変更されたときのみ実行
 
 jobs:
   deploy:
