@@ -42,6 +42,65 @@
 import boto3
 import os
 
+# AWS Budgetsを作成する関数
+# 予算の基準を超えた場合に通知するSNSトピックを指定する
+# 予算の基準は環境変数に設定されている
+# 予算の基準は毎月の予算の半分を超えた場合と予算を超えた場合に通知する
+# 予算はAWS Budgetsで設定する
+def create_budget(account_id):
+    # AWS Budgetsのクライアントを生成
+    budgets = boto3.client('budgets')
+    # 予算の基準を取得
+    budget_limit = int(os.environ['BUDGET_LIMIT'])
+    # 予算の基準を超えた場合に通知するSNSトピックを取得
+    sns_topic = os.environ['SNS_TOPIC']
+    # 予算を作成
+    budgets.create_budget(
+        AccountId=account_id,
+        Budget={
+            'BudgetName': 'MonthlyBudget',
+            'BudgetLimit': budget_limit,
+            'BudgetType': 'COST',
+            'TimeUnit': 'MONTHLY',
+            'TimePeriod': {
+                'Start': '2000-01-01',
+                'End': '2099-12-31'
+            },
+            'CalculatedSpend': {
+                'ActualSpend': {
+                    'Amount': '0',
+                    'Unit': 'USD'
+                }
+            },
+            'CostFilters': {
+                'LinkedAccount': [account_id]
+            },
+            'CostTypes': {
+                'IncludeTax': True,
+                'IncludeSubscription': True,
+                'UseBlended': True
+            },
+            'Notification': {
+                'NotificationType': 'ACTUAL',
+                'ComparisonOperator': 'GREATER_THAN',
+                'Threshold': 100,
+                'ThresholdType': 'PERCENTAGE',
+                'NotificationState': 'ALARM'
+            }
+        }
+    )
+    # 予算の基準を超えた場合に通知する
+    sns = boto3.client('sns')
+    sns.publish(
+        TopicArn=sns_topic,
+        Message='The budget of account ' + account_id + ' has exceeded the limit'
+    )
+    # 予算の半分を超えた場合に通知する
+    sns.publish(
+        TopicArn=sns_topic,
+        Message='The budget of account ' + account_id + ' has exceeded half of the limit'
+    )
+
 def lambda_handler(event,context):
     # service catalogからアカウント作成用のポートフォリオの情報を取得する。
     # この情報は環境変数に設定されている
