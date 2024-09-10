@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.12'  # 使用するPythonのバージョンを指定
-          
+
       # AWS CLIのセットアップ
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
@@ -42,4 +42,4 @@ jobs:
       # SAMデプロイ（scriptディレクトリにあるsamconfig.tomlを使う）
       - name: Deploy Lambda function
         run: |
-          sam deploy --config-file script/samconfig.toml
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --config-file script/samconfig.toml
