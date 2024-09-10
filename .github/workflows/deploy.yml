@@ -1,0 +1,39 @@
+name: CI/CD Pipeline for AWS Lambda
+
+# ワークフローをトリガーする条件
+on:
+  push:
+    branches:
+      - main  # mainブランチにプッシュされたときに実行
+
+# ワークフローのジョブ
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Ubuntu環境で実行
+    steps:
+      # リポジトリのコードをチェックアウトする
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # AWS CLIのセットアップ
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # デプロイ先のAWSリージョン
+
+      # SAM CLIのセットアップ（Lambdaデプロイ用）
+      - name: Install SAM CLI
+        run: |
+          pip install aws-sam-cli
+
+      # SAMビルドの実行
+      - name: Build Lambda function
+        run: |
+          sam build
+
+      # SAMデプロイの実行
+      - name: Deploy Lambda function
+        run: |
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
