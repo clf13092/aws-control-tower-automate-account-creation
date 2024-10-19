@@ -24,7 +24,7 @@ jobs:
       # 3. Goコードのビルド (Linux用にクロスコンパイル)
       - name: Build Go for Linux
         run: |
-          scripts/check-account-billing
+          scripts/check-account-bulling
           GOOS=linux GOARCH=amd64 go build -o check-account-bulling check-account-bulling.go
 
       # AWS CLIのセットアップ
