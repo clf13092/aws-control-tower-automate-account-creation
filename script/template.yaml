@@ -10,7 +10,7 @@ Resources:
       CodeUri: ./check-account-bulling/
       Policies:
         - AWS::IAM::ManagedPolicy::AWSOrganizationsReadOnlyAccess
-        - AWS::IAM::ManagedPolicy::AWSBudgetsServiceRolePolicyForResourceBased
+        - AWS::IAM::ManagedPolicy::AWSBudgetsActionsWithAWSResourceControlAccess
         - AWS::IAM::ManagedPolicy::AmazonSNSFullAccess
       Environment:
         Variables:
