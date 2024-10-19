@@ -9,9 +9,9 @@ Resources:
       Runtime: go1.x
       CodeUri: ./check-account-bulling/
       Policies:
-        - AWS::IAM::ManagedPolicy::AWSOrganizationsReadOnlyAccess
-        - AWS::IAM::ManagedPolicy::AWSBudgetsActionsWithAWSResourceControlAccess
-        - AWS::IAM::ManagedPolicy::AmazonSNSFullAccess
+        - arn:aws:iam::aws:policy/AWSOrganizationsReadOnlyAccess
+        - arn:aws:iam::aws:policy/AWSBudgetsActionsWithAWSResourceControlAccess
+        - arn:aws:iam::aws:policy/AmazonSNSFullAccess
       Environment:
         Variables:
           SNS_TOPIC_ARN: "SNSTopic"
