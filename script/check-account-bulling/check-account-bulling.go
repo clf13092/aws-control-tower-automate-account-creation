@@ -18,7 +18,7 @@ func handler(ctx context.Context) {
     // AWSセッションを作成
     sess := session.Must(session.NewSession())
 
-    // AWS Organizationsのクライアントを生成
+    // AWS Organizationsのクライアントを生成aa
     org := organizations.New(sess)
 
     // AWS Organizationsの全アカウントを取得
