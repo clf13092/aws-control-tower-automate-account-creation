@@ -5,6 +5,7 @@ Resources:
   CheckAccountBullingFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: BudgetChecker
       Handler: main
       Runtime: go1.x
       CodeUri: ./check-account-bulling/
