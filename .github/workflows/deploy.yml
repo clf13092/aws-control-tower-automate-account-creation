@@ -3,7 +3,7 @@ name: CI/CD Pipeline for AWS Lambda
 on:
   push:
     branches:
-      - main  # mainブランチにプッシュされたときに実行
+      - GoVersion  # GoVersionブランチにプッシュされたときに実行
     paths:
       - 'script/**'  # scriptディレクトリ以下のファイルが変更されたときのみ実行
 
@@ -13,13 +13,19 @@ jobs:
     steps:
       # リポジトリのコードをチェックアウトする
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # Python 3.12のインストール
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v2
+      # 2. Goをセットアップ
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          python-version: '3.12'  # 使用するPythonのバージョンを指定
+          go-version: '1.19'  # 必要に応じてGoのバージョンを変更
+
+      # 3. Goコードのビルド (Linux用にクロスコンパイル)
+      - name: Build Go for Linux
+        run: |
+          scripts/check-account-billing
+          GOOS=linux GOARCH=amd64 go build -o check-account-bulling check-account-bulling.go
 
       # AWS CLIのセットアップ
       - name: Set up AWS CLI

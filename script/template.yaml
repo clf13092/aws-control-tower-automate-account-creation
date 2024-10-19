@@ -5,9 +5,26 @@ Resources:
   CheckAccountBullingFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: check-account-bulling.lambda_handler
-      Runtime: python3.12
+      Handler: main
+      Runtime: go1.x
       CodeUri: ./check-account-bulling/
       Policies:
-        - arn:aws:iam::aws:policy/AWSBudgetsActionsWithAWSResourceControlAccess
-        - arn:aws:iam::aws:policy/AWSBudgetsActionsWithAWSResourceControlAccess
+        - AWS::IAM::ManagedPolicy::AWSOrganizationsReadOnlyAccess
+        - AWS::IAM::ManagedPolicy::AWSBudgetsServiceRolePolicyForResourceBased
+        - AWS::IAM::ManagedPolicy::AmazonSNSFullAccess
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: !Ref SNSTopic
+          
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: BudgetNotificationTopic
+
+Outputs:
+  BudgetCheckerFunctionArn:
+    Description: "ARN of the Budget Checker Lambda Function"
+    Value: !GetAtt BudgetCheckerFunction.Arn
+  SNSTopicArn:
+    Description: "SNS Topic ARN for Budget Notifications"
+    Value: !Ref SNSTopic
