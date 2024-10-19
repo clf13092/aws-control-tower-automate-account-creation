@@ -19,6 +19,40 @@ Resources:
         Variables:
           SNS_TOPIC_ARN: "SNSTopic"
 
+  CreateAccountFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+     BuildMethod: go1.x
+    Properties:
+      FunctionName: AccountCreator
+      Handler: bootstrap
+      Runtime: provided.al2
+      CodeUri: ./create-account/
+      Policies:
+        - arn:aws:iam::aws:policy/AWSOrganizationsReadOnlyAccess
+        - arn:aws:iam::aws:policy/AWSBudgetsActionsWithAWSResourceControlAccess
+        - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: "SNSTopic"
+
+  AddAccountInformationRecordFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+     BuildMethod: go1.x
+    Properties:
+      FunctionName: AccountInformationRecorder
+      Handler: bootstrap
+      Runtime: provided.al2
+      CodeUri: ./add-account-information-record/
+      Policies:
+        - arn:aws:iam::aws:policy/AWSOrganizationsReadOnlyAccess
+        - arn:aws:iam::aws:policy/AWSBudgetsActionsWithAWSResourceControlAccess
+        - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: "SNSTopic"
+
   SNSTopic:
     Type: AWS::SNS::Topic
     Properties:

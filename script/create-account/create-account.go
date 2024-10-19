@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/budgets"
 	"github.com/aws/aws-sdk-go/service/servicecatalog"
-	"github.com/aws/aws-sdk-go/service/sns"
 )
 
 func createBudget(accountID string) {
@@ -20,24 +20,26 @@ func createBudget(accountID string) {
 
 	budgetLimit := os.Getenv("BUDGET_LIMIT")
 	snsTopic := os.Getenv("SNS_TOPIC")
+	startDate, _ := time.Parse("2006-01-02", "2000-01-01")
+	endDate, _ := time.Parse("2006-01-02", "2099-12-31")
 
 	_, err := budgetsClient.CreateBudget(&budgets.CreateBudgetInput{
 		AccountId: aws.String(accountID),
 		Budget: &budgets.Budget{
 			BudgetName: aws.String("MonthlyBudget"),
 			BudgetLimit: &budgets.Spend{
-				Amount: aws.Float64(budgetLimit),
+				Amount: aws.String(budgetLimit),
 				Unit:   aws.String("USD"),
 			},
 			BudgetType: aws.String("COST"),
 			TimeUnit:   aws.String("MONTHLY"),
 			TimePeriod: &budgets.TimePeriod{
-				Start: aws.String("2000-01-01"),
-				End:   aws.String("2099-12-31"),
+				Start: &startDate,
+				End:   &endDate,
 			},
 			CalculatedSpend: &budgets.CalculatedSpend{
 				ActualSpend: &budgets.Spend{
-					Amount: aws.Float64(0),
+					Amount: aws.String("0"),
 					Unit:   aws.String("USD"),
 				},
 			},
@@ -49,51 +51,33 @@ func createBudget(accountID string) {
 				IncludeSubscription: aws.Bool(true),
 				UseBlended:          aws.Bool(true),
 			},
-			NotificationsWithSubscribers: []*budgets.NotificationWithSubscribers{
-				{
-					Notification: &budgets.Notification{
-						NotificationType:   aws.String("ACTUAL"),
-						ComparisonOperator: aws.String("GREATER_THAN"),
-						Threshold:          aws.Float64(100),
-						ThresholdType:      aws.String("PERCENTAGE"),
-						NotificationState:  aws.String("ALARM"),
-					},
-					Subscribers: []*budgets.Subscriber{
-						{
-							SubscriptionType: aws.String("SNS"),
-							Address:          aws.String(snsTopic),
-						},
-					},
-				},
+		},
+	})
+
+	// Create notification
+	_, err = budgetsClient.CreateNotification(&budgets.CreateNotificationInput{
+		AccountId:  aws.String(accountID),
+		BudgetName: aws.String("MonthlyBudget"),
+		Notification: &budgets.Notification{
+			NotificationType:   aws.String("ACTUAL"),
+			ComparisonOperator: aws.String("GREATER_THAN"),
+			Threshold:          aws.Float64(100),
+			ThresholdType:      aws.String("PERCENTAGE"),
+			NotificationState:  aws.String("ALARM"),
+		},
+		Subscribers: []*budgets.Subscriber{
+			{
+				SubscriptionType: aws.String("SNS"),
+				Address:          aws.String(snsTopic),
 			},
 		},
 	})
 
 	if err != nil {
-		fmt.Println("Error creating budget:", err)
+		fmt.Println("Error creating notification:", err)
 		return
 	}
 
-	snsClient := sns.New(sess)
-	_, err = snsClient.Publish(&sns.PublishInput{
-		TopicArn: aws.String(snsTopic),
-		Message:  aws.String("The budget of account " + accountID + " has exceeded the limit"),
-	})
-
-	if err != nil {
-		fmt.Println("Error publishing SNS message:", err)
-		return
-	}
-
-	_, err = snsClient.Publish(&sns.PublishInput{
-		TopicArn: aws.String(snsTopic),
-		Message:  aws.String("The budget of account " + accountID + " has exceeded half of the limit"),
-	})
-
-	if err != nil {
-		fmt.Println("Error publishing SNS message:", err)
-		return
-	}
 }
 
 func lambdaHandler(ctx context.Context, event map[string]interface{}) {
@@ -155,6 +139,8 @@ func lambdaHandler(ctx context.Context, event map[string]interface{}) {
 		fmt.Println("Error provisioning product:", err)
 		return
 	}
+
+	createBudget(emailWithoutDomain)
 }
 
 func main() {
