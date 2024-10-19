@@ -4,10 +4,12 @@ Transform: AWS::Serverless-2016-10-31
 Resources:
   CheckAccountBullingFunction:
     Type: AWS::Serverless::Function
+    Metadata:
+     BuildMethod: go1.x
     Properties:
       FunctionName: BudgetChecker
-      Handler: main
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       CodeUri: ./check-account-bulling/
       Policies:
         - arn:aws:iam::aws:policy/AWSOrganizationsReadOnlyAccess
