@@ -14,17 +14,10 @@ Resources:
         - AWS::IAM::ManagedPolicy::AmazonSNSFullAccess
       Environment:
         Variables:
-          SNS_TOPIC_ARN: !Ref SNSTopic
-          
+          SNS_TOPIC_ARN: "SNSTopic"
+
   SNSTopic:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: BudgetNotificationTopic
 
-Outputs:
-  BudgetCheckerFunctionArn:
-    Description: "ARN of the Budget Checker Lambda Function"
-    Value: !GetAtt BudgetCheckerFunction.Arn
-  SNSTopicArn:
-    Description: "SNS Topic ARN for Budget Notifications"
-    Value: !Ref SNSTopic
