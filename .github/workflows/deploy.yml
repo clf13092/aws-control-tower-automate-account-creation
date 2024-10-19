@@ -25,6 +25,8 @@ jobs:
       - name: Build Go for Linux
         run: |
           cd script/check-account-bulling
+          go mod init my-lambda-project
+          go get github.com/aws/aws-lambda-go/lambda
           GOOS=linux GOARCH=amd64 go build -o check-account-bulling check-account-bulling.go
 
       # AWS CLIのセットアップ
