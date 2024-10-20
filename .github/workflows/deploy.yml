@@ -44,6 +44,7 @@ jobs:
           go get github.com/aws/aws-sdk-go/service/sns
           go get github.com/aws/aws-sdk-go/service/dynamodb
           go get github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute
+          echo "package main"
           GOOS=linux GOARCH=amd64 go build -o add-acount-information-record add-acount-information-record.go
 
           cd ../create-account
