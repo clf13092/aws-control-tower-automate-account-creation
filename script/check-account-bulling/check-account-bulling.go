@@ -16,7 +16,7 @@ import (
 )
 
 func handler(ctx context.Context) {
-	// AWSセッションを作成
+	// AWSセッションを作成a
 	sess := session.Must(session.NewSession())
 
 	// AWS Organizationsのクライアントを生成
