@@ -54,7 +54,7 @@ func createBudget(accountID string) {
 		},
 	})
 
-	// Create notification
+	// Create notificationaa
 	_, err = budgetsClient.CreateNotification(&budgets.CreateNotificationInput{
 		AccountId:  aws.String(accountID),
 		BudgetName: aws.String("MonthlyBudget"),

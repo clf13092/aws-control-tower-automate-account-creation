@@ -33,6 +33,26 @@ jobs:
           go get github.com/aws/aws-sdk-go/service/organizations
           go get github.com/aws/aws-sdk-go/service/sns
           GOOS=linux GOARCH=amd64 go build -o check-account-bulling check-account-bulling.go
+          cd ../add-acount-information-record
+          go mod init my-lambda-project
+          go get github.com/aws/aws-lambda-go/lambda
+          go get github.com/aws/aws-sdk-go/aws
+          go get github.com/aws/aws-sdk-go/aws/session
+          go get github.com/aws/aws-sdk-go/service/budgets
+          go get github.com/aws/aws-sdk-go/service/organizations
+          go get github.com/aws/aws-sdk-go/service/sns
+          GOOS=linux GOARCH=amd64 go build -o add-acount-information-record add-acount-information-record.go
+          cd ../create-acount
+          go mod init my-lambda-project
+          go get github.com/aws/aws-lambda-go/lambda
+          go get github.com/aws/aws-sdk-go/aws
+          go get github.com/aws/aws-sdk-go/aws/session
+          go get github.com/aws/aws-sdk-go/service/budgets
+          go get github.com/aws/aws-sdk-go/service/organizations
+          go get github.com/aws/aws-sdk-go/service/sns
+          GOOS=linux GOARCH=amd64 go build -o create-acount create-acount.go
+          
+
 
       # AWS CLIのセットアップ
       - name: Set up AWS CLI
