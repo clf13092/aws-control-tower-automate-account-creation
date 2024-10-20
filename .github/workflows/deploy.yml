@@ -33,6 +33,7 @@ jobs:
           go get github.com/aws/aws-sdk-go/service/organizations
           go get github.com/aws/aws-sdk-go/service/sns
           GOOS=linux GOARCH=amd64 go build -o check-account-bulling check-account-bulling.go
+
           cd ../add-acount-information-record
           go mod init my-lambda-project
           go get github.com/aws/aws-lambda-go/lambda
@@ -42,7 +43,8 @@ jobs:
           go get github.com/aws/aws-sdk-go/service/organizations
           go get github.com/aws/aws-sdk-go/service/sns
           GOOS=linux GOARCH=amd64 go build -o add-acount-information-record add-acount-information-record.go
-          cd ../create-acount
+
+          cd ../create-account
           go mod init my-lambda-project
           go get github.com/aws/aws-lambda-go/lambda
           go get github.com/aws/aws-sdk-go/aws
@@ -50,7 +52,7 @@ jobs:
           go get github.com/aws/aws-sdk-go/service/budgets
           go get github.com/aws/aws-sdk-go/service/organizations
           go get github.com/aws/aws-sdk-go/service/sns
-          GOOS=linux GOARCH=amd64 go build -o create-acount create-acount.go
+          GOOS=linux GOARCH=amd64 go build -o create-account create-account.go
           
 
 
