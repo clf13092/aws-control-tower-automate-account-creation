@@ -44,7 +44,7 @@ Resources:
       FunctionName: AccountInformationRecorder
       Handler: bootstrap
       Runtime: provided.al2
-      CodeUri: ./add-account-information-record/
+      CodeUri: ./add-acount-information-record/
       Policies:
         - arn:aws:iam::aws:policy/AWSOrganizationsReadOnlyAccess
         - arn:aws:iam::aws:policy/AWSBudgetsActionsWithAWSResourceControlAccess
